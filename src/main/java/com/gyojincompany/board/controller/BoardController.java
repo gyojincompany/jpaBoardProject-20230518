@@ -8,16 +8,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gyojincompany.board.entity.Question;
 import com.gyojincompany.board.repository.QuestionRepository;
+import com.gyojincompany.board.service.QuestionService;
 
 @Controller
 public class BoardController {
 	
 	@Autowired
-	private QuestionRepository questionRepository;
+	private QuestionService questionService;
 	
 	@RequestMapping(value = "/")
 	public String home() {
@@ -46,7 +48,7 @@ public class BoardController {
 		question.setCreateDate(LocalDateTime.now());//서버의 현재시간 입력
 		
 		
-		questionRepository.save(question);//insert(질문글 저장)
+		//questionRepository.save(question);//insert(질문글 저장)
 		
 		return "redirect:questionlist";
 	}
@@ -54,12 +56,23 @@ public class BoardController {
 	@RequestMapping(value = "/questionList")
 	public String questionList(Model model) {
 		
-		List<Question> questionList = questionRepository.findAll();
+//		List<Question> questionList = questionRepository.findAll();
 		//SELECT * FROM question
+		
+		List<Question> questionList = questionService.getQuestionList();
 		
 		model.addAttribute("questionList", questionList);
 		
 		return "question_list";
 	}
+	
+	@RequestMapping(value = "/questionContentView/{id}")
+	public String quesitonView(@PathVariable("id") Integer id) {
+		
+//		System.out.print(id);//질문리스트에서 유저가 클릭한 글의 번호
+		return "question_view";
+	}
+	
+	
 	
 }
