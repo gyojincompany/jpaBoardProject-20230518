@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"> 
 <title>질문 상세보기</title>
 </head>
 <body>
@@ -17,7 +18,7 @@
 	</div>	
 	
 	<form th:action="@{|/answerCreate/${question.id}|}" method="post">
-		<textarea rows="10" cols="100" name="content"></textarea>
+		<textarea rows="10" name="content"></textarea>
 		<input type="submit" value="답변등록">
 	</form>
 </body>
