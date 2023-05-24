@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gyojincompany.board.entity.Question;
 import com.gyojincompany.board.repository.QuestionRepository;
+import com.gyojincompany.board.service.AnswerService;
 import com.gyojincompany.board.service.QuestionService;
 
 @Controller
@@ -20,6 +21,9 @@ public class BoardController {
 	
 	@Autowired
 	private QuestionService questionService;
+	
+	@Autowired
+	private AnswerService answerService;
 	
 	@RequestMapping(value = "/")
 	public String home() {
@@ -78,6 +82,14 @@ public class BoardController {
 		return "question_view";
 	}
 	
-	
+	@RequestMapping(value = "/answerCreate/{id}")
+	public String answerCreate(@PathVariable("id") Integer id, HttpServletRequest request) {		
+		
+		Question question = questionService.getQuestion(id);
+		
+		answerService.answerCreate(request.getParameter("content"), question);
+		
+		return String.format("redirect:/questionContentView/%s",id);		
+	}
 	
 }
