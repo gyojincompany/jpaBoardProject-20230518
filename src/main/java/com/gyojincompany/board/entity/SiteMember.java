@@ -30,7 +30,7 @@ public class SiteMember {
 	@Column(unique = true)//아이디가 기본키는 아니지만 유니크 속성 부여(중복된 값 x)
 	private String userid;//아이디
 	
-	private String userpw;//비밀번호
+	private String userpw;//비밀번호	
 	
 	private String email;//이메일
 

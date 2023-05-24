@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-<title>질문 등록</title>
+<title>회원 가입</title>
 </head>
 <body>
 	<!-- 네비게이션 바 시작 -->
@@ -20,33 +20,39 @@
 	        </li>
 	        <li class="nav-item">
 	          <a class="nav-link" href="#">로그인</a>
-	        </li>
+	        </li> 
 	        <li class="nav-item">
 	          <a class="nav-link" href="memberJoin">회원가입</a>
-	        </li>  
+	        </li> 
 	      </ul>
 	    </div>
 	  </div>
 	</nav>
 	<!-- 네비게이션 바 끝 -->
-
-	<div class="container">
-		<h5 class="my-3 border-bottom pb-2">질문 등록하기</h5>
-		<form th:action="@{/questionCreate}" method="post" th:object="${questionForm}">
-			<!-- 질문 등록시 에러 발생 메세지 출력 -->
+	<div>
+		<div>
+			<h4>회원 가입</h4>
+		</div>
+		<form th:action="@{/memberJoin}" method="post" th:object="${memberForm}">
+			<!-- 회원 등록시 에러 발생 메세지 출력 -->
 			<div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">				
 				<div th:each="err:${#fields.allErrors()}" th:text="${err}"></div>
 			</div>			
 			<!-- 에러 발생 출력 끝 -->
-			<div class="mb-3">
-				<label class="form-label" for="subject">제목</label> 
-				<input type="text" th:field="*{subject}" id="subject" class="form-control"><br>
+			
+			<div>
+				사용자 아이디 : <input type="text" th:field="*{userid}">
 			</div>
-			<div class="mb-3">
-				<label class="form-label" for="content">내용</label>
-				<textarea id="content" class="form-control" rows="10" th:field="*{content}"></textarea><br>
-				<input type="submit" value="저장하기" class="btn btn-primary my-2">
+			<div>
+				사용자 비밀번호 : <input type="password" th:field="*{userpw1}">
 			</div>
+			<div>
+				사용자 비밀번호 확인 : <input type="password" th:field="*{userpw2}">
+			</div>
+			<div>
+				사용자 이메일 : <input type="text" th:field="*{email}">
+			</div>
+			<input type="submit" value="회원가입">		
 		</form>
 	</div>
 </body>

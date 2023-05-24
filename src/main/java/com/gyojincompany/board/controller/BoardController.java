@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gyojincompany.board.dto.AnswerForm;
+import com.gyojincompany.board.dto.MemberForm;
 import com.gyojincompany.board.dto.QuestionForm;
 import com.gyojincompany.board.entity.Question;
 import com.gyojincompany.board.repository.QuestionRepository;
+import com.gyojincompany.board.repository.SiteMemberRepository;
 import com.gyojincompany.board.service.AnswerService;
+import com.gyojincompany.board.service.MemberService;
 import com.gyojincompany.board.service.QuestionService;
 
 @Controller
@@ -30,6 +33,9 @@ public class BoardController {
 	
 	@Autowired
 	private AnswerService answerService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@RequestMapping(value = "/")
 	public String home() {
@@ -106,6 +112,28 @@ public class BoardController {
 		answerService.answerCreate(answerForm.getContent(), question);
 		
 		return String.format("redirect:/questionContentView/%s",id);		
+	}
+	
+	@GetMapping(value = "/memberJoin")
+	public String memberJoinForm(MemberForm memberForm) {
+		return "member_join";
+	}
+	
+	@PostMapping(value = "/memberJoin")
+	public String memberJoin(@Valid MemberForm memberForm, BindingResult bindingResult) {
+		
+		if(bindingResult.hasErrors()) {
+			return "member_join";
+		}
+		
+		if(!memberForm.getUserpw1().equals(memberForm.getUserpw2())) {//비밀번호 확인 실패
+			bindingResult.rejectValue("userpw2", "passwordCheckInCorrect","비밀번호 확인란의 비밀번호가 일치하지 않습니다.");
+			return "member_join";
+		}
+		
+		memberService.memberJoin(memberForm.getUserid(), memberForm.getUserpw1(), memberForm.getEmail());
+		
+		return "redirect:index";
 	}
 	
 }
