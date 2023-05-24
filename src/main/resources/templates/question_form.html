@@ -8,7 +8,12 @@
 <body>
 	<div class="container">
 		<h5 class="my-3 border-bottom pb-2">질문 등록하기</h5>
-		<form th:action="@{/questionCreate}" method="post">
+		<form th:action="@{/questionCreate}" method="post" th:object="${questionForm}">
+			<!-- 질문 등록시 에러 발생 메세지 출력 -->
+			<div th:if="${#fields.hasAnyErrors()}">				
+				<div th:each="err:${#fields.allErrors()}" th:text="${err}"></div>
+			</div>			
+			<!-- 에러 발생 출력 끝 -->
 			<div class="mb-3">
 				<label class="form-label" for="subject">제목</label> 
 				<input type="text" name="subject" id="subject" class="form-control"><br>

@@ -4,13 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.gyojincompany.board.dto.QuestionForm;
 import com.gyojincompany.board.entity.Question;
 import com.gyojincompany.board.repository.QuestionRepository;
 import com.gyojincompany.board.service.AnswerService;
@@ -40,12 +45,24 @@ public class BoardController {
 		return "question_form";
 	}
 	
-	@RequestMapping(value = "/questionCreate")
-	public String create(HttpServletRequest request) {
+	@PostMapping(value = "/questionCreate")//post만 받음
+	public String create(Model model, @Valid QuestionForm questionForm, BindingResult bindingResult) {
 		
-		questionService.questionCreate(request.getParameter("subject"), request.getParameter("content"));
+		if(bindingResult.hasErrors()) {//에러가 발생하면 참
+			
+			return "question_form";
+		} 
+		
+		questionService.questionCreate(questionForm.getSubject(), questionForm.getContent());
+		
 				
 		return "redirect:questionList";
+	}
+	
+	@GetMapping(value = "/questionCreate")
+	public String questionCreate(QuestionForm questionForm) {
+		
+		return "question_form";
 	}
 	
 	@RequestMapping(value = "/questionList")
