@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.gyojincompany.board.dto.AnswerForm;
 import com.gyojincompany.board.dto.QuestionForm;
 import com.gyojincompany.board.entity.Question;
 import com.gyojincompany.board.repository.QuestionRepository;
@@ -79,7 +80,7 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value = "/questionContentView/{id}")
-	public String quesitonView(@PathVariable("id") Integer id, Model model) {
+	public String quesitonView(@PathVariable("id") Integer id, Model model, AnswerForm answerForm) {
 		
 //		System.out.print(id);//질문리스트에서 유저가 클릭한 글의 번호
 		
@@ -91,11 +92,18 @@ public class BoardController {
 	}
 	
 	@RequestMapping(value = "/answerCreate/{id}")
-	public String answerCreate(@PathVariable("id") Integer id, HttpServletRequest request) {		
+	public String answerCreate(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult) {		
 		
 		Question question = questionService.getQuestion(id);
 		
-		answerService.answerCreate(request.getParameter("content"), question);
+		if(bindingResult.hasErrors()) {
+			
+			model.addAttribute("question", question);
+			
+			return "question_view";
+		}
+		
+		answerService.answerCreate(answerForm.getContent(), question);
 		
 		return String.format("redirect:/questionContentView/%s",id);		
 	}
