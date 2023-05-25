@@ -2,6 +2,7 @@ package com.gyojincompany.board.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gyojincompany.board.entity.SiteMember;
@@ -13,11 +14,14 @@ public class MemberService {
 	@Autowired
 	private SiteMemberRepository siteMemberRepository;
 	
-	public SiteMember memberJoin(String userid, String userpw, String email) {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	public SiteMember memberJoin(String username, String userpw, String email) {
 		
 		SiteMember siteMember = new SiteMember();
-		siteMember.setUserid(userid);
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		siteMember.setUsername(username);
+//		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		siteMember.setUserpw(passwordEncoder.encode(userpw));
 		//유저가 입력한 암호를 hash함수로 암호화하여 암호문을 DB에 저장
 		
