@@ -267,4 +267,18 @@ public class BoardController {
 		
 	}
 	
+	@PreAuthorize("isAuthenticated()")//로그인이 안되어 있으면 login 페이지로 이동시킴
+	@RequestMapping(value = "/questionLike/{id}")
+	public String questionLike(@PathVariable("id") Integer id, Principal principal) {
+		
+		Question question = questionService.getQuestion(id);
+		
+		SiteMember siteMember = memberService.getMember(principal.getName());//현재 로그인 중인 유저의 정보(객체) 가져오기
+		
+		questionService.questionLike(question, siteMember);
+		
+		return String.format("redirect:/questionContentView/%s", id);	
+		
+	}
+	
 }
