@@ -1,5 +1,7 @@
 package com.gyojincompany.board.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +32,15 @@ public class MemberService {
 		
 		siteMemberRepository.save(siteMember);
 		
-		return siteMember;
+		return siteMember;		
+	}
+	
+	public SiteMember getMember(String username) {
 		
+		Optional<SiteMember> optSiteMember = siteMemberRepository.findByUsername(username);
+		
+		SiteMember siteMember = optSiteMember.get();
+		
+		return siteMember;
 	}
 }

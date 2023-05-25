@@ -1,5 +1,6 @@
 package com.gyojincompany.board.controller;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,7 @@ import com.gyojincompany.board.dto.AnswerForm;
 import com.gyojincompany.board.dto.MemberForm;
 import com.gyojincompany.board.dto.QuestionForm;
 import com.gyojincompany.board.entity.Question;
+import com.gyojincompany.board.entity.SiteMember;
 import com.gyojincompany.board.repository.QuestionRepository;
 import com.gyojincompany.board.repository.SiteMemberRepository;
 import com.gyojincompany.board.service.AnswerService;
@@ -53,25 +56,31 @@ public class BoardController {
 		return "question_form";
 	}
 	
+	@PreAuthorize("isAuthenticated()")//로그인이 안되어 있으면 login 페이지로 이동시킴
 	@PostMapping(value = "/questionCreate")//post만 받음
-	public String create(Model model, @Valid QuestionForm questionForm, BindingResult bindingResult) {
+	public String create(Model model, @Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
 		
 		if(bindingResult.hasErrors()) {//에러가 발생하면 참
 			
 			return "question_form";
 		} 
 		
-		questionService.questionCreate(questionForm.getSubject(), questionForm.getContent());
+		//principal.getName() -> 현재 로그인 중인 유저의 username 가져오기
+		SiteMember siteMember = memberService.getMember(principal.getName());
+		
+		questionService.questionCreate(questionForm.getSubject(), questionForm.getContent(), siteMember);
 		
 				
 		return "redirect:questionList";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/questionCreate")
 	public String questionCreate(QuestionForm questionForm) {
 		
 		return "question_form";
 	}
+	
 	
 	@RequestMapping(value = "/questionList")
 	public String questionList(Model model) {
@@ -98,8 +107,9 @@ public class BoardController {
 		return "question_view";
 	}
 	
+	@PreAuthorize("isAuthenticated()")//로그인이 안되어 있으면 login 페이지로 이동시킴
 	@RequestMapping(value = "/answerCreate/{id}")
-	public String answerCreate(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult) {		
+	public String answerCreate(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {		
 		
 		Question question = questionService.getQuestion(id);
 		
@@ -110,7 +120,9 @@ public class BoardController {
 			return "question_view";
 		}
 		
-		answerService.answerCreate(answerForm.getContent(), question);
+		SiteMember siteMember = memberService.getMember(principal.getName());
+		
+		answerService.answerCreate(answerForm.getContent(), question, siteMember);
 		
 		return String.format("redirect:/questionContentView/%s",id);		
 	}
