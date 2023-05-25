@@ -46,5 +46,14 @@ public class QuestionService {
 		
 		questionRepository.save(question);
 	}
+	
+	public void questionModify(Question question, String subject, String content) {
+		
+		question.setSubject(subject);
+		question.setContent(content);
+		question.setModifyDate(LocalDateTime.now());//현재 시간을 가져와서 수정 시간으로 입력
+		
+		questionRepository.save(question);		
+	}
 
 }
